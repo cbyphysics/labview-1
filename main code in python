@@ -1,0 +1,40 @@
+import math
+from decimal import Decimal, getcontext
+
+# 设置精度
+getcontext().prec = 10
+
+def read_third_column(file_path):
+    third_column_data = []
+    
+    with open(file_path, 'r') as file:
+        for line in file:
+            parts = line.split()
+            if len(parts) >= 3:
+                third_column_data.append(Decimal(parts[1]))  # 使用Decimal存储数据
+    
+    return third_column_data
+
+def calculate_average(data):
+    return sum(data) / len(data) if data else Decimal(0)
+
+def calculate_rms_difference(data, average):
+    squared_diff_sum = sum((x - average) ** 2 for x in data)
+    return (squared_diff_sum / len(data)).sqrt() if data else Decimal(0)
+
+def main(file_path):
+    third_column_data = read_third_column(file_path)
+    
+    if not third_column_data:
+        print("文件中没有足够的数据")
+        return
+    
+    average = calculate_average(third_column_data)
+    print(f"平均值: {average:.10f}")
+    
+    rms_difference = calculate_rms_difference(third_column_data, average)
+    print(f"每个数据与平均值之差的方均根: {rms_difference:.10f}")
+
+if __name__ == "__main__":
+    file_path = "data.txt"  # 替换为你的txt文件路径
+    main(file_path)
